@@ -1,5 +1,10 @@
-Mobile app retail store..for sale electrical appliances  
+Project overview:
 
+Mobile app retail store..for sale electrical appliances.
+It supports the provision of offers on products by the store owner, 
+and the ability to evaluate products and add them to the favorites list by users in addition to make orders.
+
+It contains:
 - User Roles:
    The application supports multiple user roles, including regular users and administrators. Regular users can access and interact with the platform's content, while administrators have additional privileges to manage and moderate the platform.
 
@@ -18,9 +23,17 @@ Mobile app retail store..for sale electrical appliances
 - API Endpoints:
    The project provides several API endpoints to interact with the platform. These endpoints include retrieving all suggestions, creating new suggestions, retrieving a specific suggestion, and deleting a suggestion.
 
-## Contents
 
-[graph](#graph)
+
+> :warning: **Warning:** This contents below ↓ contains just parts of my code.
+>                        You can access my full project files by clone it from my GitLab repository
+>                        (requires asking for my permissions  to grant you access to it):
+>                        https://gitlab.com/skandar.s1998/aim 
+
+## Contents
+(contains descriptive parts of my code)
+
+[Project actions and progress(graph)](#project-graph)
 
 [Authentication](#authentication)
 
@@ -38,7 +51,10 @@ Mobile app retail store..for sale electrical appliances
 
 [Relation between offers and products](#offer-product)
 
-### **graph**
+### **project-graph**
+
+This graph diagram represents the actions and progress for the project.
+
 ![App Logo](/graph_1.png)
 ![App Logo](/graph_2.png)
 
@@ -119,7 +135,7 @@ The $this->middleware('auth:sanctum')->only(['logout', 'user']); line specifies 
 
 ## store-product
 
-**app\Http\Controllers\api\ProductController.php:**
+`app\Http\Controllers\api\ProductController.php`
 
 ```php
 public function store(Request $request)
@@ -182,7 +198,8 @@ Route::apiResource('products', LanguageController::class);
 
 ### **notification-model**
 
-app\Models\Notification.php:
+`app\Models\Notification.php`
+
 ```php
 class Notification extends Model
 {
@@ -353,25 +370,6 @@ This method performs the following steps:
 
 By utilizing the `send_to_all_users` method, you can easily send a notification to all verified users with the role "user" in your application, ensuring that it is marked as unread for each user.
 
-
-
-
-The `$message` array is used to store the message content for different languages,
-while the `$registration_ids` array is used to store FCM registration IDs for each language.
-
-This method create a message for each language supported by the application by calling the [get_message($lang)](#get_message) method that also defined in this model.
-
-It retrieves the Firebase Cloud Messaging (FCM) tokens for the users specified by the users_ids parameter.
-It retrieves the Firebase API key from the environment configuration.
-It iterates over each language and sends the notification using the Http class to the FCM endpoint, providing the registration IDs and the notification title and body.
-
-*FCM tokens are unique identifiers assigned to mobile devices by FCM. These tokens allow the server to send push notifications to specific devices.*
-*On the mobile app side, the app needs to request and obtain the FCM token from the Firebase SDK on the device. The FCM token is then sent to the server and associated with the corresponding user. This allows the server to send push notifications to the specific device.*
-
-
-
-The function then iterates over the supported languages (stored in the `Language::$all_languages` array) and checks if there are any registration IDs for each language. If there are registration IDs available, it makes a POST request to the FCM service (`https://fcm.googleapis.com/fcm/send`) using the `Http` client.
-
 ### send-method
 
 The `send` function is responsible for sending push notifications to users of a mobile app using Firebase Cloud Messaging (FCM).
@@ -502,7 +500,7 @@ Once the request and file validations pass, the code proceeds to upload the file
 
 ### **upload-file**
 
-app\helpers.php:
+`app\helpers.php`
 
 ```php
 function upload_file($request_file, $prefix, $folder_name)
@@ -513,9 +511,26 @@ function upload_file($request_file, $prefix, $folder_name)
     return $folder_name.'/'.$file_to_store;
 }
 ```
+
+The `upload_file` function is a utility function that handles file uploads within the application. It performs the following tasks:
+
+1. Takes a file as input and generates a unique filename for storage.
+2. Stores the file in the specified folder.
+3. Returns the relative path of the uploaded file.
+
+It takes three parameters:
+
+1. `$request_file`: The file obtained from the request.
+2. `$prefix`: A prefix string used to create a unique filename.
+3. `$folder_name`: The name of the folder where the file will be stored.
+
+The function returns the relative path of the uploaded file. This path is obtained by concatenating the `$folder_name` and the unique filename generated for the file.
+
+The `upload_file` function is placed within the app helper class, which provides common functions for various tasks. These helper functions are globally accessible throughout the application without needing to import or instantiate any specific class.
+
 ### **languages**
 
-File: `app\Http\Controllers\Dashboard\LanguageController.php`
+`app\Http\Controllers\Dashboard\LanguageController.php`
 
 ```php
 public function __construct()
@@ -584,7 +599,7 @@ It uses the `createWithTranslations` method on the [HasTranslation trait class](
 
 ### **language-middleware**
 
-app\Http\Middleware\Language.php:
+`app\Http\Middleware\Language.php`
 
 ```php
 class Language
@@ -619,7 +634,7 @@ This static method accepts an optional array of languages as a parameter. Tis me
 
 ### **has-translation**
 
-app\Traits\HasTranslation.php:
+`app\Traits\HasTranslation.php`
 
 ```php
 public static function createWithTranslations($attributes = [], Model|null $parent = null, array $languages = null){
@@ -696,7 +711,7 @@ After storing the translations, calls the `loadTranslations` method to load the 
 
 ### **language-resource**
 
-app\Http\Resources\LanguageResource.php:
+`app\Http\Resources\LanguageResource.php`
 
 ```php
 class LanguageResource extends JsonResource
@@ -716,7 +731,7 @@ class LanguageResource extends JsonResource
 [🔝 Back to contents](#contents)
 ### **offers**
 
-**app\Http\Controllers\api\OfferController.php:**
+`app\Http\Controllers\api\OfferController.php`
 
 ```php
 public function __construct()
@@ -776,7 +791,7 @@ The code also executes a query on the Rating model using the query builder. It s
 
 ### **add-to-favorites**
 
-**app\Http\Controllers\api\FavoriteController.php:**
+`app\Http\Controllers\api\FavoriteController.php`
 
 ```php
 public function store(Request $request)
@@ -822,7 +837,7 @@ The code executes a query on the Rating model using the *query builder*. It then
 
 ### **search**
 
-app\Http\Controllers\api\SearchController.php:
+`app\Http\Controllers\api\SearchController.php`
 
 ```php
 public function search(Request $request)
@@ -1023,8 +1038,6 @@ class OfferProduct extends Model
 ```
 
 This setup allows you to establish a many-to-many relationship between Offer and Product models, with the intermediate table `offer_product` storing additional data such as the quantity of each product associated with an offer.
-
-
 
 
 [🔝 Back to contents](#contents)

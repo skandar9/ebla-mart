@@ -52,7 +52,7 @@ It contains:
 
 [Search method](#searching)
 
-[Relation between offers and products](#offer-product)
+[Relation between offers and products](#offer-product-relation)
 
 
 ### **tables-and-relations**
@@ -1033,7 +1033,7 @@ The method returns an array containing the filtered `products` and `offers` as c
 
 [🔝 Back to contents](#contents)
 
-## Relationship Between Offer and Product (offer-product)
+## Relationship Between Offer and Product (offer-product-relation)
 
 The relationship between Offer and Product models is a many-to-many relationship defined by the `belongsToMany` method. The intermediate table `offer_product` is used to establish the relationship and includes additional data such as the quantity of each product associated with an offer.
 

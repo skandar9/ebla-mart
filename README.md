@@ -33,11 +33,13 @@ It contains:
 ## Contents
 (contains descriptive parts of my code)
 
+[Tables and relations](#tables-and-relations)
+
 [Project actions and progress(graph)](#project-graph)
 
 [Authentication](#authentication)
 
-[Store product function](#store-product)
+[Create product](#store-product)
 
 [Add media to specific product](#product-media)
 
@@ -50,6 +52,15 @@ It contains:
 [Search method](#search)
 
 [Relation between offers and products](#offer-product)
+
+
+### **tables-and-relations**
+
+![Logo](/images/tables.png)
+
+For more details about the content of the tables <a href="/ebla.pdf" target="_blank">Click here</a>
+
+[🔝 Back to contents](#contents)
 
 ### **project-graph**
 

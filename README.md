@@ -38,7 +38,7 @@ It contains:
 
 [Project actions and progress(graph)](#project-graph)
 
-[Authentication](#authentication)
+[Authentication (register & login)](#authentication)
 
 [Create product](#store-product)
 
@@ -74,74 +74,116 @@ This graph diagram represents the actions and progress for the project.
 
 ### **authentication**
 
-app\Http\Controllers\AuthController.php:
-
-The constructor, this function is part of a controller class and is responsible for setting up themiddleware for authentication using Laravel Sanctum.
-This middleware ensures that the user is authenticated using the Sanctum authentication guardbefore accessing the methods.
-The $this->middleware('auth:sanctum')->only(['logout', 'user']); line specifies that the'auth:sanctum' middleware should be applied only to the 'logout' and 'user' methods.
+`routes\api.php`
 
 ```php
-    public function __construct()
-    {
-        $this->middleware('auth:api')->only(['logout']);
-    }
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 ```
 
+`app\Http\Controllers\AuthController.php`
+
+### constructor method
+
 ```php
-    public function register (Request $request) 
-    {
-        $request->validate([
-            'name'       => ['required', 'string'],
-            'email'      => ['required', 'string', 'email', 'unique:users'],  
-            'password'   => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
+public function __construct()
+{
+    $this->middleware('auth:api')->only(['logout']);
+}
+```
 
-        $user = User::create([
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'role'      => 'user',
-            'balance'   => 0,
-        ]);
+The constructor of this controller class is responsible for setting up the middleware for authentication using Laravel Sanctum. This middleware ensures that the user is authenticated using the Sanctum authentication guard before accessing the methods. The line `$this->middleware('auth:api')->only(['logout']);` specifies that the `auth:api` middleware should be applied only to the `logout` method.
 
-        $token = $user->createToken('Proxy App')->accessToken;
-        
+### register method
+
+```php
+public function register(Request $request)
+{
+    $request->validate( [
+        'name'     => 'required',
+        'username' => ['required', 'regex:/^[a-z0-9\.]{4,}$/', 'unique:users,username'],
+        'password' => ['required','min:6', 'confirmed'],
+        'remember' => ['boolean'],
+    ]);
+
+    $user = new User();
+    $user->name = $request->name;
+    $user->username = $request->username;
+    $user->password = bcrypt($request['password']);
+    $user->save();
+    
+    if (Auth::attempt(['username' => $request->username, 'password' => $request->password], $request->remember??false)) {
+        $user = to_user(Auth::user());
+        $token = $user->createToken('Sanctum', [])->plainTextToken;
         return response()->json([
             'user' => new UserResource($user),
             'token' => $token,
+            'remember_token' => Auth::user()->remember_token,
         ], 200);
     }
+}
 ```
+
+This method handles the registration process for a user. Here's a description of the functionality of some lines within the method:
+
+- It starts by validating the incoming request data using the `$request->validate()` method. The provided validation rules enforce
+  that the `name`, `username`, and `password` fields are required. Additionally, the `username` field must match the given regular expression pattern (`/^[a-z0-9\.]{4,}$/`), and it must be unique in the `users` table. The `password` field must have a minimum length of 6 characters, and the `remember` field should be a boolean value.
+
+- The `password` property is set to the hashed value of the `password` field from the request using the `bcrypt()` function,
+  which helps securely hash the password.
+
+- The code attempts to authenticate the user by calling `Auth::attempt()`, passing an array with the `username`
+  and `password` fields from the request. If authentication is successful, it proceeds with the following steps.
+
+- A token is generated for the user using the `createToken()` method, with the token name set to `'Sanctum'`
+  and an empty array of abilities.
+  The token is retrieved in plain text format using the `plainTextToken` property.
+
+- A JSON response is returned with the user details in the `user` field, the generated token in the `token` field, 
+  and the user's `remember_token` in the `remember_token` field.
+
+### login method
 
 ```php
-    public function login (Request $request) 
-    {
-       $request->validate([
-            'email'      => ['required', 'string', 'email'],  
-            'password'   => ['required', 'string'],
-        ]);
+public function login(Request $request)
+{
+    $request->validate( [
+        'username' => 'required',
+        'password' => ['required','min:6'],
+        'remember' => ['boolean'],
+    ]);
 
-        $user = User::where('email', $request->email)->first();
-
-        if ($user) {
-            if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('Mega Panel App')->accessToken;
-
-                return response()->json([
-                    'user' => new UserResource($user),
-                    'token' => $token,
-                ], 200);   
-            }
-        }
-        
+    if (Auth::attempt(['username' => $request->username, 'password' => $request->password], $request->remember??false)) {
+        $user = to_user(Auth::user());
+        $token = $user->createToken('Sanctum', [])->plainTextToken;
         return response()->json([
-            'message' => 'email or password is incorrect.',
-            'errors' => [
-                'email' => ['email or password is incorrect.']
-            ]
-        ], 422);
+            'user' => new UserResource($user),
+            'token' => $token,
+            'remember_token' => Auth::user()->remember_token,
+        ], 200);
     }
+
+    return response()->json([
+        'message' => 'username or password is incorrect.',
+        'errors' => [
+            'username' => ['username or password is incorrect.']
+        ]
+    ], 422);
+}
 ```
+This method handles the `login` process for a user. Here's a description of the functionality of some lines within the method:
+
+- It starts by validating the incoming request data using the `$request->validate()` method. The provided validation rules enforce
+  that the `username` and `password` fields are required. The `password` field must have a minimum length of 6 characters, and the `remember` field should be a boolean value.
+
+- If the validation passes, the code attempts to authenticate the user by calling `Auth::attempt()`, passing an array
+  with the `username` and `password` fields from the request. If authentication is successful, it proceeds with the following steps.
+
+- A token is generated for the user using the `createToken()` method, with the token name set to `'Sanctum'` and an empty
+  array of abilities.
+  The token is retrieved in plain text format using the `plainTextToken` property.
+
+- If authentication fails, the code returns a JSON response with an error message stating that the username or password is incorrect. The response includes an error array with the 'username' field containing the same error message. The response has an HTTP status code of 422 (Unprocessable Entity).
 
 [🔝 Back to contents](#contents)
 

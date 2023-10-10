@@ -50,7 +50,7 @@ It contains:
 
 [Add a specific product to favorites](#add-to-favorite)
 
-[Search method](#search)
+[Search method](#searching)
 
 [Relation between offers and products](#offer-product)
 
@@ -889,7 +889,7 @@ The code executes a query on the Rating model using the *query builder*. It then
 
 [🔝 Back to contents](#contents)
 
-### **search**
+### **searching**
 
 `app\Http\Controllers\api\SearchController.php`
 

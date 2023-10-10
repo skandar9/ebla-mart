@@ -67,8 +67,8 @@ For more details about the content of the tables <a href="/ebla.pdf" target="_bl
 
 This graph diagram represents the actions and progress for the project.
 
-![App Logo](/graph_1.png)
-![App Logo](/graph_2.png)
+![App Logo](/images/graph_1.png)
+![App Logo](/images/graph_2.png)
 
 [🔝 Back to contents](#contents)
 
@@ -349,7 +349,7 @@ class Notification extends Model
 ```
 ## Model Contents
 
-### Morph Relationship:
+### Morph Relationship
 
 The model contains two morph relationships defined using the `morphTo()` method:
 
@@ -365,7 +365,7 @@ The `morphTo()` method is used to define polymorphic relationships. It enables t
 
 By utilizing these morph relationships, you can easily retrieve the corresponding `source` and `target` model instances associated with the notification, enabling you to perform various operations and access related data efficiently.
 
-### create_notification:
+### create_notification
 
 ```php
 public static function create_notification($type, $source, $target, $data)
@@ -393,7 +393,7 @@ The `target_id` attribute is set to the `id` of the `$target` model if it exists
 
 The `data` attribute is set by encoding the `$data` array into JSON format using the `json_encode()` function. This allows additional data to be stored along with the notification.
 
-### send_to_all_users:
+### send_to_all_users
 
 The `send_to_all_users` method is used to send a notification to all verified users with the role "user". Here is the code:
 

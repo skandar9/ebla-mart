@@ -5,6 +5,7 @@ It supports the provision of offers on products by the store owner,
 and the ability to evaluate products and add them to the favorites list by users in addition to make orders.
 
 It contains:
+
 - User Roles:
    The application supports multiple user roles, including regular users and administrators. Regular users can access and interact with the platform's content, while administrators have additional privileges to manage and moderate the platform.
 

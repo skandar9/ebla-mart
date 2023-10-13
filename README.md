@@ -74,7 +74,6 @@ This graph diagram represents the actions and progress for the project.
 
 ### **authentication**
 
-
 I used Laravel Sanctum To handle authentication process. Sanctum allows to authenticate users and protect routes using API tokens.
 
 For the login and signup functionality, I defined these routes in the routes/api.php file.

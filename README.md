@@ -29,7 +29,7 @@ It contains:
 > :warning: **Warning:** This contents below ↓ contains just parts of my code.
 >                        You can access my full project files by clone it from my GitLab repository
 >                        (requires asking for my permissions  to grant you access to it):
->                        https://gitlab.com/skandar.s1998/aim 
+>                        https://gitlab.com/skandar.s1998/ebla-mart 
 
 ## Contents
 (contains descriptive parts of my code)
